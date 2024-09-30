@@ -1,5 +1,6 @@
 import pygame
-from circleshape import *
+from circleshape import CircleShape
+from shot import Shot
 from constants import *
 
 # Inherits from circleshape for hitbox
@@ -7,6 +8,7 @@ class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.shotTimer = 0
     
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), 2)
@@ -17,6 +19,10 @@ class Player(CircleShape):
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt
+
+    def shoot(self):
+        shot = Shot(self.position.x, self.position.y, SHOT_RADIUS)
+        shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOT_SPEED
 
     # Player model (visual)
     def triangle(self):
@@ -29,6 +35,7 @@ class Player(CircleShape):
     
     def update(self, dt):
         keys = pygame.key.get_pressed()
+        self.shotTimer -= dt
 
         if keys[pygame.K_w]:
             self.move(dt)
@@ -38,3 +45,10 @@ class Player(CircleShape):
             self.rotate(-dt)
         if keys[pygame.K_d]:
             self.rotate(dt)
+        if keys[pygame.K_SPACE] or keys[pygame.K_q]:
+            if self.shotTimer > 0:
+                pass
+            else:
+                self.shoot()
+                self.shotTimer = PLAYER_SHOT_COOLDOWN
+            
