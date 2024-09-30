@@ -2,23 +2,29 @@ import pygame
 from constants import *
 from circleshape import *
 from player import *
+from asteroid import *
+from asteroidfield import *
 
 def main():
 
     # Pygame initialization
     pygame.init()
-    pygame.display.set_caption("Radu SAVE ME, pleae")
+    pygame.display.set_caption("Asteroids_demo0.0.1")
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     gameClock = pygame.time.Clock()
     deltaTime = 0
     
     # Containers for processing (BEFORE any objects are defined)
-    updateable = pygame.sprite.Group()
+    updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
 
-    # Player instance
-    Player.containers = (updateable, drawable)
+    # Start instances & containers
+    Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    asteroidfield = AsteroidField()
     
     # Game loop
     while True:
@@ -27,9 +33,13 @@ def main():
             if event.type == pygame.QUIT:
                 return
 
-        for item in updateable:
+        for item in updatable:
             item.update(deltaTime)
 
+        for asteroid in asteroids:
+            if asteroid.isColliding(player):
+                print("Game over!")
+                return
         screen.fill("black")
         
         for item in drawable:
