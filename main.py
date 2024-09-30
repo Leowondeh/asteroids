@@ -2,17 +2,17 @@ import pygame, sys, os
 from func.fileManagement import getVersion
 from func.sendGreeting import *
 from constants import *
-from circleshape import *
-from player import *
-from asteroid import *
-from asteroidfield import *
-from shot import Shot
+from sprites.circleshape import *
+from sprites.player import *
+from sprites.asteroid import *
+from sprites.asteroidField import *
+from sprites.shot import Shot
 
 def main():
 
     # Pygame initialization
     pygame.init()
-    pygame.display.set_caption(f"Asteroids_demo {getVersion()}")
+    pygame.display.set_caption(f"Asteroids v{getVersion()}")
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     gameClock = pygame.time.Clock()
     deltaTime = 0
@@ -51,6 +51,10 @@ def main():
                 os.system('clear')
                 sendGreeting('gameover')
                 return
+            for shot in shots:
+                if shot.isColliding(asteroid):
+                    shot.kill()
+                    asteroid.split()
         screen.fill("black")
         
         for item in drawable:
