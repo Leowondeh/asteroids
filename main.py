@@ -12,9 +12,14 @@ def main():
     gameClock = pygame.time.Clock()
     deltaTime = 0
     
-    # Player instance
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    # Containers for processing (BEFORE any objects are defined)
+    updateable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
 
+    # Player instance
+    Player.containers = (updateable, drawable)
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    
     # Game loop
     while True:
         # X button fix
@@ -22,9 +27,13 @@ def main():
             if event.type == pygame.QUIT:
                 return
 
-        screen.fill("black")
+        for item in updateable:
+            item.update(deltaTime)
 
-        player.draw(screen)
+        screen.fill("black")
+        
+        for item in drawable:
+            item.draw(screen)
 
         pygame.display.flip()
 
