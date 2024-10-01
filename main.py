@@ -1,4 +1,4 @@
-import pygame, sys, os, logging, time
+import pygame, sys, os, logging
 from func.sendGreeting import *
 from func.updateTitle import updateTitle
 from constants import *
@@ -10,56 +10,63 @@ from sprites.shot import Shot
 
 def main():
 
-    # LOGGING
+    # logging
     logging.basicConfig(level=logging.DEBUG)
-    # Pygame initialization
-    pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    # Background
+    # pygame initialization
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), display=0)
+
+    # background
     backgroundImage = pygame.image.load('assets/bg.jpg').convert()
     backgroundRect = backgroundImage.get_rect()
     backgroundRect.center = SCREEN_WIDTH/2, SCREEN_HEIGHT/2
 
-    # Vars
+    # vars
     gameClock = pygame.time.Clock()
     deltaTime = 0
     lives = 3
     score = 0
     gamemode = 'START'
     
-    # Containers for processing (BEFORE any objects are defined)
+    # containers for processing (BEFORE any objects are defined)
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+    logging.debug("Loaded containers")
 
-    # Start instances & containers
+    # start instances & containers
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     Shot.containers = (shots, updatable, drawable)
     AsteroidField.containers = (updatable)
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroidfield = AsteroidField()
 
-    os.system('clear')
+    # visual init
     sendGreeting('startprogram')
     updateTitle(gamemode, lives, score)
 
-    # Game loop
+    # game loop
     while True:
         try:
             while gamemode == 'RUNNING':
-                # X button fix
+                # X button fix & pause controls
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         os.system('clear')
                         sendGreeting('quickexit')
                         sys.exit()
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_p: 
+                            gamemode = 'PAUSED'
+                            updateTitle(gamemode, lives, score)
 
+                # update all in container
                 for item in updatable:
                     item.update(deltaTime)
 
+                # asteroid collision checks (with player and shots)
                 for asteroid in asteroids:
                     if asteroid.isColliding(player):
                         lives -= 1
@@ -83,7 +90,7 @@ def main():
                             asteroid.split()
                             updateTitle(gamemode, lives, score)
 
-                # Draw background
+                # draw background
                 screen.fill('black')
                 screen.blit(backgroundImage, backgroundRect)
                 pygame.draw.rect(screen, 'black', backgroundRect, 1)
@@ -95,27 +102,42 @@ def main():
 
                 # 60fps tickrate. maybe add option for this later?
                 deltaTime = gameClock.tick(60) / 1000
-            while gamemode == 'START':
-                inp = input()
-                if inp == 'q' or inp == 'quit':
-                    os.system('clear')
-                    sendGreeting('quickexit')
-                    sys.exit()
-                elif inp == 'o' or inp == 'opt' or inp == 'options':
-                    raise NotImplementedError
-                elif inp == 's' or inp == 'start':
-                    os.system('clear')
-                    sendGreeting('startgame')
-                    gamemode = "RUNNING"
-                    updateTitle(gamemode, lives, score)
 
+            # pause gamemode
+            while gamemode == 'PAUSED':
+                gameClock.tick(0)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        os.system('clear')
+                        sendGreeting('quickexit')
+                        sys.exit()
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_p: 
+                            gamemode = 'RUNNING'
+                            gameClock.tick(60)
+                            updateTitle(gamemode, lives, score)
+            
+            # start gamemode
+            while gamemode == 'START':
+                pygame.display.flip()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        os.system('clear')
+                        sendGreeting('quickexit')
+                        sys.exit()
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_s: 
+                            player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                            gamemode = 'RUNNING'
+                            updateTitle(gamemode, lives, score)
+                        if event.key == pygame.K_o:
+                            print('options tapped')
+        # catch and exit if ctrl-c
         except KeyboardInterrupt:
             os.system('clear')
             sendGreeting('quickexit')
             sys.exit()
 
-
-
-# Run main only if file is run directly
+# run main only if file is run directly
 if __name__ == '__main__':
     main()

@@ -18,7 +18,6 @@ def sendGreeting(type):
     ║                       ║
     ║        Welcome!       ║
     ║                       ║
-    ║ q - Quit the game     ║
     ║ s - Start the game    ║
     ║ o - Options menu      ║
     ╚═══════════════════════╝""")
