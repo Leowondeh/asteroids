@@ -1,6 +1,6 @@
-import pygame, random
+import pygame, random, logging
 from constants import *
-from sprites.circleshape import CircleShape
+from sprites.circleShape import CircleShape
 
 class Asteroid(CircleShape):
     def __init__(self, x, y, radius):
@@ -22,5 +22,6 @@ class Asteroid(CircleShape):
         resultAsteroid2 = Asteroid(self.position.x, self.position.y, self.radius - ASTEROID_MIN_RADIUS)
         resultAsteroid1.velocity = self.velocity.rotate(spawnAngle) * 1.2
         resultAsteroid2.velocity = self.velocity.rotate(-spawnAngle) * 1.2
+        logging.debug(f"Asteroid split ({self.position.x}, {self.position.y}), {spawnAngle} deg")
 
         

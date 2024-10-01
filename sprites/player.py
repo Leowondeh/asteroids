@@ -1,5 +1,5 @@
 import pygame
-from sprites.circleshape import CircleShape
+from sprites.circleShape import CircleShape
 from sprites.shot import Shot
 from constants import *
 

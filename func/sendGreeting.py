@@ -1,10 +1,8 @@
-from time import sleep
-import os
 from func.fileManagement import getVersion
 
 def sendGreeting(type):
     # start
-    if type == "start":
+    if type == "startgame":
         print(f"""
     ╔═══════════════════════╗
     ║  Asteroids! v{getVersion()} ║
@@ -13,8 +11,19 @@ def sendGreeting(type):
     ║ Use WASD to move and  ║
     ║    SPACE to shoot     ║
     ╚═══════════════════════╝""")
+    elif type == "startprogram":
+        print(f"""
+    ╔═══════════════════════╗
+    ║  Asteroids! v{getVersion()} ║
+    ║                       ║
+    ║        Welcome!       ║
+    ║                       ║
+    ║ q - Quit the game     ║
+    ║ s - Start the game    ║
+    ║ o - Options menu      ║
+    ╚═══════════════════════╝""")
 
-    # exit (unused, use if need to save)
+    # exit
     elif type == "gameover":
         print("""
     ╔═══════════════════════╗
