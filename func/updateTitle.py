@@ -7,4 +7,4 @@ def updateTitle(type, lives, score):
     elif type == "PAUSED":
         pygame.display.set_caption(f"Asteroids v{getVersion()} | Paused (tap P again to resume)")
     elif type == "START":
-        pygame.display.set_caption(f"Asteroids v{getVersion()} | Welcome! Check the console to start.")
+        pygame.display.set_caption(f"Asteroids v{getVersion()} | Welcome! Check the console for controls and options.")

@@ -15,26 +15,23 @@ def main():
 
     # pygame initialization
     pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), display=0)
+    gameClock, deltaTime, lives, score, gamemode = pygame.time.Clock(), 0, 3, 0, 'START'
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), display=DISPLAY)
+
+    # console init message
+    os.system('clear')
+    sendGreeting('startprogram')
 
     # background
     backgroundImage = pygame.image.load('assets/bg.jpg').convert()
     backgroundRect = backgroundImage.get_rect()
     backgroundRect.center = SCREEN_WIDTH/2, SCREEN_HEIGHT/2
-
-    # vars
-    gameClock = pygame.time.Clock()
-    deltaTime = 0
-    lives = 3
-    score = 0
-    gamemode = 'START'
     
     # containers for processing (BEFORE any objects are defined)
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
-    logging.debug("Loaded containers")
 
     # start instances & containers
     Player.containers = (updatable, drawable)
@@ -43,8 +40,7 @@ def main():
     AsteroidField.containers = (updatable)
     asteroidfield = AsteroidField()
 
-    # visual init
-    sendGreeting('startprogram')
+    # set window title
     updateTitle(gamemode, lives, score)
 
     # game loop
@@ -100,7 +96,6 @@ def main():
 
                 pygame.display.flip()
 
-                # 60fps tickrate. maybe add option for this later?
                 deltaTime = gameClock.tick(60) / 1000
 
             # pause gamemode
@@ -131,7 +126,11 @@ def main():
                             gamemode = 'RUNNING'
                             updateTitle(gamemode, lives, score)
                         if event.key == pygame.K_o:
-                            print('options tapped')
+                            print(
+'''     You can modify different constants used by the game in the 
+     constants.py file. On the next restart the game will load them.
+     Close the window to quit now or 's' to start the game as normal.''')
+
         # catch and exit if ctrl-c
         except KeyboardInterrupt:
             os.system('clear')
